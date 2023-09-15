@@ -1,4 +1,4 @@
-from dash import Dash, html
+from dash import Dash, dcc, html, Input, Output, callback
 import pandas as pd
 
 app = Dash(__name__)
@@ -21,12 +21,14 @@ app.layout = html.Div([
                     'background-height': 200,
                     'background-width': 400
                     }
-                )
-        ]
-        ),
+                    ),
+            dcc.Input(id='my-input', value = 1, type = 'number')
+            ]
+    ),
     html.Div(
         children=html.Div([
-            html.H1('Overview'),
+            html.H1('Output'),
+            html.Div(id='my-output'),
             html.Div('''
                 This is an example of a simple Dash app with
                 local, customized CSS.
@@ -42,10 +44,13 @@ style = {
         }
 )
 
-@app.callback(
-    Output('output-text', 'children'),
-    [Input('dropdown-selector', 'value')]
+@callback(
+    Output(component_id='my-output', component_property='children'),
+    Input(component_id='my-input', component_property='value')
 )
+
+def update_output_div(input_value):
+    return f'Output: {input_value}'
 
 if __name__ == '__main__':
     app.run(debug=True)
